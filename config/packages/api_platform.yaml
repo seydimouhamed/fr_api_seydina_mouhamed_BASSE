@@ -5,9 +5,3 @@ api_platform:
         json: ['application/merge-patch+json']
     swagger:
         versions: [3]
-     handlers:
-         nested:
-             type: stream
--            path: "%kernel.logs_dir%/%kernel.environment%.log"
-+            path: php://stderr
-             level: debug
