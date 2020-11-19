@@ -2,27 +2,27 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Profil;
+use App\Entity\ProfilSortie;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
-class ProfileFixtures extends Fixture 
+class ProfilSortieFixtures extends Fixture 
 {
 
     
     public static function getReferenceKey($i)
     {
-        return sprintf('profil_%s',$i);
+        return sprintf('profilSortie_%s',$i);
     }
 
     public function load(ObjectManager $manager)
     {
-        $libelles = ["ADMIN","FORMATEUR","CM","APPRENANT"];
+        $profilSortis = ["Développeur front", "back", "fullstack", "CMS", "intégrateur", "designer", "CM", "Data"];
 
-        foreach($libelles as $k => $lib)
+        foreach($profilSortis as $k => $ps)
         {
-            $profil = new Profil();
-            $profil-> setLibelle($lib);
+            $profil = new ProfilSortie();
+            $profil-> setLibelle($ps);
             $profil->setArchivage(0);
             $manager->persist($profil);
             $this->addReference(self::getReferenceKey($k), $profil);

@@ -5,10 +5,24 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ApiResource()
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="disc", type="string")
+ * @ORM\DiscriminatorMap({"admin"="User","apprenant"="Apprenant","Formateur","cm"="Cm"})
+ * @ApiResource(
+ *     routePrefix="/admin",
+ *       normalizationContext={"groups"={"user:read"}},
+ *       denormalizationContext={"groups"={"user:write"}},
+ *       attributes={
+ *          "security"="is_granted('ROLE_ADMIN')",
+ *          "security_message"="Acces non autorisé",
+ *          "pagination_enabled"=true, 
+ *          "pagination_items_per_page"=3}
+ * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
 class User implements UserInterface
@@ -17,11 +31,14 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"user:read","profil:read"})
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"user:read", "user:write","profil:read"})
+     * @Assert\NotBlank
      */
     private $usernme;
 
@@ -32,34 +49,50 @@ class User implements UserInterface
 
     /**
      * @var string The hashed password
+     * @Groups({"user:write"})
      * @ORM\Column(type="string")
+     * @Assert\NotBlank
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user:read", "user:write","profil:read"})
+     * @Assert\NotBlank
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user:read", "user:write","profil:read"})
+     * @Assert\NotBlank
      */
     private $lastname;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" : false})
      */
     private $archivage;
 
     /**
      * @ORM\Column(type="blob", nullable=true)
+     * @Groups({"user:read", "user:write","profil:read"})
      */
     private $avatar;
 
     /**
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="users")
+     * @Groups({"user:read", "user:write"})
      */
     private $profil;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"user:read", "user:write","profil:read"})
+     * @Assert\Email
+     * @Assert\Unique
+     */
+    private $email;
 
     public function getId(): ?int
     {
@@ -177,11 +210,20 @@ class User implements UserInterface
 
     public function getAvatar()
     {
-        return $this->avatar;
+       
+        if($this->avatar!==null){
+            $content = \stream_get_contents($this->avatar);
+            fclose($this->avatar);
+            
+            return base64_encode($content);
+        }
+
+        return null;
     }
 
     public function setAvatar($avatar): self
     {
+        
         $this->avatar = $avatar;
 
         return $this;
@@ -195,6 +237,18 @@ class User implements UserInterface
     public function setProfil(?Profil $profil): self
     {
         $this->profil = $profil;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }
