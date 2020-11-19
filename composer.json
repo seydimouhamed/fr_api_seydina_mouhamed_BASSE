@@ -65,13 +65,7 @@
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
-        "initDB":[
-                  "symfony console doctrine:database:drop --force",
-                  "symfony console doctrine:database:create",
-                  "symfony console doctrine:migrations:migrate",
-                  "symfony console doctrine:fixtures:load -n"
-        ],
-        "post-install-cmd": [
+         "post-install-cmd": [
             "@auto-scripts"
         ],
         "post-update-cmd": [
