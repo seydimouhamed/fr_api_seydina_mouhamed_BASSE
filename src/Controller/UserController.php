@@ -52,10 +52,10 @@ class UserController extends AbstractController
         
         //recupération de l'image
         $photo = $request->files->get("avatar");
-
+        $data["profil"] = "api/admin/profils/1";
 
         $user = $this->serializer->denormalize($data,"App\Entity\User",true);
-      //  dd($user);
+        dd($user);
         $profil=$user->getProfil()->getLibelle();
         if($profil!=="ADMIN")
         {
