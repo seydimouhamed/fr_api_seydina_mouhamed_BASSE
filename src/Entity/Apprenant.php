@@ -34,14 +34,16 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *               "method"="GET", 
  *               "path"="/apprenants/{id}",
  *                "defaults"={"id"=null},
- *                "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN') or is_granted('ROLE_APPRENANT') or is_granted('ROLE_CM'))",
+ *                "requirements"={"id"="\d+"},
+ *                "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN') or object==user or is_granted('ROLE_CM'))",
  *                  "security_message"="Acces non autorisé",
  *          },
  *
  *            "modifier_apprenants_id"={ 
  *               "method"="PUT", 
  *               "path"="/apprenants/{id}",
- *                "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN') or is_granted('ROLE_APPRENANT'))",
+ *                "requirements"={"id"="\d+"},
+ *                "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN') or object==user )",
  *                  "security_message"="Acces non autorisé",
  *          },
  *
@@ -53,7 +55,12 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *          },
  *       },
  *       normalizationContext={"groups"={"apprenant:read","user:read"}},
- *       denormalizationContext={"groups"={"apprenant:write","user:write"}}
+ *       denormalizationContext={"groups"={"apprenant:write","user:write"}},
+ *       attributes={
+ *          "pagination_enabled"=true,
+ *          "pagination_client_items_per_page"=true, 
+ *          "pagination_items_per_page"=5}
+ *    
  * 
  * )
  * @ORM\Entity(repositoryClass=ApprenantRepository::class)

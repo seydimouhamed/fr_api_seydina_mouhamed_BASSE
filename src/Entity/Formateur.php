@@ -10,32 +10,28 @@ use ApiPlatform\Core\Annotation\ApiResource;
 /**
  * @ApiResource(
  *      collectionOperations={
- *           "get_formateurs"={ 
+ *        "get"={
  *               "method"="GET", 
- *               "path"="/formateurs",
- *               "security"="( is_granted('ROLE_ADMIN') or is_granted('ROLE_CM'))",
- *               "security_message"="Acces non autorisé",
- *          },
- *            "add_formateur"={ 
- *               "method"="POST", 
- *               "path"="/formateurs",
- *               "security"="is_granted('ROLE_ADMIN')",
- *               "security_message"="Acces non autorisé",
- *          }
+ *               "path"="/formateurs}",
+ *                "security"="( (is_granted('ROLE_ADMIN') or is_granted('ROLE_CM'))",
+ *                  "security_message"="Acces non autorisé"
+ *         },
  *      },
  *      itemOperations={
  *           "get_formateur_id"={ 
  *               "method"="GET", 
  *               "path"="/formateurs/{id}",
  *                "defaults"={"id"=null},
- *                "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN') or is_granted('ROLE_CM'))",
+ *                "requirements"={"id"="\d+"},
+ *                "security"="(object==user or is_granted('ROLE_ADMIN') or is_granted('ROLE_CM'))",
  *                  "security_message"="Acces non autorisé",
  *          },
  *
  *            "modifier_formateur_id"={ 
  *               "method"="PUT", 
  *               "path"="/formateurs/{id}",
- *                "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN'))",
+ *               "requirements"={"id"="\d+"},
+ *                "security"="(object==user  or is_granted('ROLE_ADMIN'))",
  *                  "security_message"="Acces non autorisé",
  *          },
  *      },

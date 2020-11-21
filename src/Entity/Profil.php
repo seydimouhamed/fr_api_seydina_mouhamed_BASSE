@@ -4,10 +4,12 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProfilRepository;
+use Doctrine\ORM\Mapping\PostRemove;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -19,7 +21,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *      normalizationContext={"groups"={"profil:read"}},
  *      denormalizationContext={"groups"={"profil:write"}},
  *      attributes={
- *          "security"="is_granted('ROLE_ADMIN')",
+ *          "security"="is_granted('ROLE_ADMIN') or object==user",
  *          "security_message"="Acces non autorisé",
  *      }
  * )
@@ -117,4 +119,16 @@ class Profil
 
         return $this;
     }
+
+    // /**
+    //  * @ORM\PostRemove
+    //  */
+    // public function removeAllUsers()
+    // {
+    //     $users= $this->getUsers();
+    //     foreach($users as $user)
+    //     {
+    //         $this->removeUser($user);
+    //     }
+    // }
 }

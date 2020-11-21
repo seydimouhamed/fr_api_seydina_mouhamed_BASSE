@@ -2,14 +2,26 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\ProfilSortieRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Repository\ProfilSortieRepository;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     routePrefix="/admin",
+ *       normalizationContext={"groups"={"ps:read"}},
+ *       denormalizationContext={"groups"={"ps:write"}},
+ *       attributes={
+ *          "security"="is_granted('ROLE_ADMIN')",
+ *          "security_message"="Acces non autorisé",
+ *          "pagination_enabled"=true,
+ *          "pagination_client_items_per_page"=true, 
+ *          "pagination_items_per_page"=5}
+ *  )
  * @ORM\Entity(repositoryClass=ProfilSortieRepository::class)
  */
 class ProfilSortie
@@ -18,21 +30,25 @@ class ProfilSortie
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"ps:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"ps:read","ps:write"})
+     * @Assert\NotBlank
      */
     private $libelle;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" : false})
      */
-    private $archivage;
+    private $archivage=false;
 
     /**
      * @ORM\OneToMany(targetEntity=Apprenant::class, mappedBy="profilSortie")
+     * ApiSubresource()
      */
     private $apprenants;
 

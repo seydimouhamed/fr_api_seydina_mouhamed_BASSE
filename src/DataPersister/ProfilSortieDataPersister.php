@@ -1,11 +1,11 @@
 <?php
 namespace App\DataPersister;
 
-use App\Entity\Profil;
+use App\Entity\ProfilSortie;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 
-final class ProfilDataPersister implements ContextAwareDataPersisterInterface
+final class ProfilSortieDataPersister implements ContextAwareDataPersisterInterface
 {
 
     private $em;
@@ -15,7 +15,7 @@ final class ProfilDataPersister implements ContextAwareDataPersisterInterface
     }
     public function supports($data, array $context = []): bool
     {
-        return $data instanceof Profil;
+        return $data instanceof ProfilSortie;
     }
 
     public function persist($data, array $context = [])

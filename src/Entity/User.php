@@ -4,25 +4,38 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 /**
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="disc", type="string")
- * @ORM\DiscriminatorMap({"admin"="User","apprenant"="Apprenant","Formateur","cm"="Cm"})
+ * @ORM\DiscriminatorMap({"admin"="User","apprenant"="Apprenant","formateur"="Formateur","cm"="Cm"})
  * @ApiResource(
  *     routePrefix="/admin",
+ *      collectionOperations={
+ *          "get",
+ *          "post"={
+ *              "validation_groups"={"Default", "create"}
+ *          },
+ *     },
  *       normalizationContext={"groups"={"user:read"}},
  *       denormalizationContext={"groups"={"user:write"}},
  *       attributes={
  *          "security"="is_granted('ROLE_ADMIN')",
  *          "security_message"="Acces non autorisé",
- *          "pagination_enabled"=true, 
- *          "pagination_items_per_page"=3}
+ *          "pagination_enabled"=true,
+ *          "pagination_client_items_per_page"=true, 
+ *          "pagination_items_per_page"=5}
+ *    
  * )
+ * @ApiFilter(SearchFilter::class, properties={"profil.libelle": "exact"})
+ * @ApiFilter(BooleanFilter::class, properties={"archivage"})
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
 class User implements UserInterface
@@ -49,11 +62,16 @@ class User implements UserInterface
 
     /**
      * @var string The hashed password
-     * @Groups({"user:write"})
      * @ORM\Column(type="string")
-     * @Assert\NotBlank
      */
     private $password;
+
+
+    /**
+     * @Groups("user:write")
+     * @Assert\NotBlank(groups={"create"})
+     */
+    private $plainPassword;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -90,7 +108,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255)
      * @Groups({"user:read", "user:write","profil:read"})
      * @Assert\Email
-     * @Assert\Unique
+     * @Assert\NotBlank
      */
     private $email;
 
@@ -154,6 +172,26 @@ class User implements UserInterface
 
         return $this;
     }
+    /**
+    * @see UserInterface
+    */
+   public function getPlainPassword(): string
+   {
+    if($this->password)
+    {
+        $this->plainPassword =$this->password;
+        return $this;
+    }
+       return (string) $this->plainPassword;
+   }
+
+   public function setPlainPassword(string $plainPassword): self
+   {
+       
+       $this->plainPassword = $plainPassword;
+
+       return $this;
+   }
 
     /**
      * @see UserInterface
