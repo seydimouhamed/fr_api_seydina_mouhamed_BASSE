@@ -34,7 +34,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *          "pagination_items_per_page"=5}
  *    
  * )
- * @ApiFilter(SearchFilter::class, properties={"profil.libelle": "exact"})
  * @ApiFilter(BooleanFilter::class, properties={"archivage"})
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */

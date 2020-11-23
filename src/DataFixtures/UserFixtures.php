@@ -54,11 +54,11 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             {
                 $user = new User();
 
-                if($profil->getLibelle()=="APPRENANT")
-                {
-                    $user= $this->getApprenant();
+                // if($profil->getLibelle()=="APPRENANT")
+                // {
+                //     $user= $this->getApprenant();
                    
-                }
+                // }
                 if($profil->getLibelle()=="FORMATEUR")
                 {
                     $user = new Formateur();
