@@ -41,7 +41,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
        $faker= Factory::create('fr-FR');
        $this->photo= "";
       // $this->photo= \fopen($faker->imageUrl($width =640, $height = 640), 'rb');
-        for($j=0;$j<=4;$j++)
+        for($j=0;$j<=2;$j++)
         {
             $profil=$this->getReference(ProfileFixtures::getReferenceKey($j));
             $nbrUserProfil=2;
