@@ -42,4 +42,12 @@ use ApiPlatform\Core\Annotation\ApiResource;
  */
 class Formateur extends User
 {
+    private $profil="";
+
+    public function setProfil(?Profil $profil): self
+    {
+        $this->profil = $profil;
+
+        return $this;
+    }
 }

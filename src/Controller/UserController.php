@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Formateur;
+use App\Services\UserService;
 use Doctrine\ORM\EntityManager;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,17 +23,21 @@ class UserController extends AbstractController
     private $serializer;
     private $validator;
     private $em;
+    private $_userService;
 
     public function __construct(
         UserPasswordEncoderInterface $encoder,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
-        EntityManagerInterface $em)
+        EntityManagerInterface $em,
+        UserService $_userService)
     {
         $this->encoder=$encoder;
         $this->serializer=$serializer;
         $this->validator=$validator;
         $this->em=$em;
+        $this->_userService = $_userService;
+        
     }
     /**
      * @Route(
@@ -48,45 +54,50 @@ class UserController extends AbstractController
     public function add(Request $request)
     {
         //recupéré tout les données de la requete
-        $data = $request->request->all();
+        if($this->getUser()->getRoles()[0] !== 'ROLE_ADMIN')
+        {
+            return $this->json(['message'=>'acces refuse'],Response::HTTP_BAD_REQUEST);
+        }
         
+
+        $user = $this->_userService->add($request);
+       //-------------------------------------------------------------------------- 
         //recupération de l'image
-        $photo = $request->files->get("avatar");
-        $data["profil"] = "api/admin/profils/1";
+        // $photo = $request->files->get("avatar");
+        // $data["profil"] = "api/admin/profils/1";
 
-        $user = $this->serializer->denormalize($data,"App\Entity\User",true);
-        dd($user);
-        $profil=$user->getProfil()->getLibelle();
-        if($profil!=="ADMIN")
-        {
-            $user=$this->serializer->denormalize($data,"App\Entity\\".$profil,true);
-            
-            //si l'utilisateur est un a apprenant
-            if($profil=='APPRENANT')
-            {
+        // $user = $this->serializer->denormalize($data,"App\Entity\User",true);
+        // dd($user);
+        // $profil=$user->getProfil()->getLibelle();
+        // if($profil!=="ADMIN")
+        // {
+        //     $user=$this->serializer->denormalize($data,"App\Entity\\".$profil,true);
+        //     //si l'utilisateur est un a apprenant
+        //     if($profil=='APPRENANT')
+        //     {
 
-            }
-        }
+        //     }
+        // }
         
-        if($photo)
-        {
-            $photoBlob = fopen($photo->getRealPath(),"rb");
+        // if($photo)
+        // {
+        //     $photoBlob = fopen($photo->getRealPath(),"rb");
             
-             $user->setAvatar($photoBlob);
-        }
+        //      $user->setAvatar($photoBlob);
+        // }
         
-        $errors = $this->validator->validate($user);
-        if (count($errors)){
-            $errors = $this->serializer->serialize($errors,"json");
-            return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
-        }
-        $password = $user->getPlainPassword();
-        $user->setPassword($this->encoder->encodePassword($user,$password));
-        $user->setArchivage(false);
+        // $errors = $this->validator->validate($user);
+        // if (count($errors)){
+        //     $errors = $this->serializer->serialize($errors,"json");
+        //     return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
+        // }
+        // $password = $user->getPlainPassword();
+        // $user->setPassword($this->encoder->encodePassword($user,$password));
+        // $user->setArchivage(false);
+      //  ------------------------------
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
+        $this->em->persist($user);
+        $this->em->flush();
         
         return $this->json("success",201);
      }

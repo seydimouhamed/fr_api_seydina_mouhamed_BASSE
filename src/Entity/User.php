@@ -67,10 +67,10 @@ class User implements UserInterface
     private $password;
 
 
-    /**
-     * @Groups("user:write")
-     * @Assert\NotBlank(groups={"create"})
-     */
+    // /**
+    //  * @Groups("user:write")
+    //  * @Assert\NotBlank(groups={"create"})
+    //  */
     private $plainPassword;
 
     /**
@@ -90,7 +90,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="boolean", options={"default" : false})
      */
-    private $archivage;
+    private $archivage=false;
 
     /**
      * @ORM\Column(type="blob", nullable=true)
