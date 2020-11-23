@@ -41,7 +41,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
        $faker= Factory::create('fr-FR');
        $this->photo= "";
       // $this->photo= \fopen($faker->imageUrl($width =640, $height = 640), 'rb');
-        for($j=0;$j<1;$j++)
+        for($j=0;$j<=3;$j++)
         {
             $profil=$this->getReference(ProfileFixtures::getReferenceKey($j));
             $nbrUserProfil=2;
@@ -54,20 +54,20 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             {
                 $user = new User();
 
-                // if($profil->getLibelle()=="APPRENANT")
-                // {
-                //     $user= $this->getApprenant();
+                if($profil->getLibelle()=="APPRENANT")
+                {
+                    $user= $this->getApprenant();
                    
-                // }
-                // if($profil->getLibelle()=="FORMATEUR")
-                // {
-                //     $user = new Formateur();
-                // }
+                }
+                if($profil->getLibelle()=="FORMATEUR")
+                {
+                    $user = new Formateur();
+                }
 
-                // if($profil->getLibelle()=="CM")
-                // {
-                //     $user = new Cm();
-                // }
+                if($profil->getLibelle()=="CM")
+                {
+                    $user = new Cm();
+                }
                 $this->addUserCommonInfo($user, $profil, $i);
              $manager->persist($user);
             }

@@ -36,6 +36,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  * )
  * @ApiFilter(BooleanFilter::class, properties={"archivage"})
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @Orm\Table("`user`")
  */
 class User implements UserInterface
 {
