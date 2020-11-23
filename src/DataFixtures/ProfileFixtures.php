@@ -17,7 +17,7 @@ class ProfileFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $libelles = ["ADMIN","FORMATEUR","CM"];
+        $libelles = ["ADMIN"];
 
         foreach($libelles as $k => $lib)
         {

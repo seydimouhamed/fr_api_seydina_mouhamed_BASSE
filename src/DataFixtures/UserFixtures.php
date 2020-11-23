@@ -59,15 +59,15 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
                 //     $user= $this->getApprenant();
                    
                 // }
-                if($profil->getLibelle()=="FORMATEUR")
-                {
-                    $user = new Formateur();
-                }
+                // if($profil->getLibelle()=="FORMATEUR")
+                // {
+                //     $user = new Formateur();
+                // }
 
-                if($profil->getLibelle()=="CM")
-                {
-                    $user = new Cm();
-                }
+                // if($profil->getLibelle()=="CM")
+                // {
+                //     $user = new Cm();
+                // }
                 $this->addUserCommonInfo($user, $profil, $i);
              $manager->persist($user);
             }
