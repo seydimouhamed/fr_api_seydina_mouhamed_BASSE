@@ -20,6 +20,18 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *     routePrefix="/admin",
  *      normalizationContext={"groups"={"profil:read"}},
  *      denormalizationContext={"groups"={"profil:write"}},
+ *      itemOperations={
+ *           "get_apprenants_id"={ 
+ *               "method"="PUT", 
+ *               "path"="/profils/{id}",
+ *                 "serializer"=false,
+ *                "defaults"={"id"=null},
+ *                "requirements"={"id"="\d+"},
+ *                "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN') or object==user or is_granted('ROLE_CM'))",
+ *                  "security_message"="Acces non autorisé",
+ *          },
+ *          "get",
+ *},
  *      attributes={
  *          "security"="is_granted('ROLE_ADMIN') or object==user",
  *          "security_message"="Acces non autorisé",

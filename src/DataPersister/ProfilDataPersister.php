@@ -20,7 +20,12 @@ final class ProfilDataPersister implements ContextAwareDataPersisterInterface
 
     public function persist($data, array $context = [])
     {
+        dd($data);
+        
       // call your persistence layer to save $data
+
+      $this->em->persist($data);
+      $this->em->flush();
       return $data;
     }
 

@@ -25,7 +25,16 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             ProfilSortieFixtures::class,
         );
     }
-
+    
+    public static function getReferenceAppKey($i)
+    {
+        return sprintf('app_%s',$i);
+    }
+    
+    public static function getReferenceFormKey($i)
+    {
+        return sprintf('form_%s',$i);
+    }
      private $_encoder; 
      private $_profil;
      private $photo='';
@@ -44,10 +53,10 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         for($j=0;$j<=3;$j++)
         {
             $profil=$this->getReference(ProfileFixtures::getReferenceKey($j));
-            $nbrUserProfil=2;
+            $nbrUserProfil=4;
             if($profil->getLibelle()=="APPRENANT")
             {
-                $nbrUserProfil=40;
+                $nbrUserProfil=64;
             }
              
             for($i=1; $i <= $nbrUserProfil; $i++)
@@ -69,16 +78,26 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
                     $user = new Cm();
                 }
                 $this->addUserCommonInfo($user, $profil, $i);
+                if($user instanceof Apprenant){
+                    $this->addReference(self::getReferenceAppKey($i), $user);
+                }
+                if($user instanceof Formateur){
+                    $this->addReference(self::getReferenceFormKey($i), $user);
+                }
              $manager->persist($user);
             }
         }
         $manager->flush();
     }
 
+
+
+
+
     private function getApprenant()
     {
         $faker = Factory::create('fr-FR');
-        $keyPS=$faker->randomElement([0,1,2,3,4,5,6,7]);
+        $keyPS=$faker->numberBetween(0,7);
                     $apprenant= new Apprenant();
                     $apprenant->setGenre($faker->randomElement(['homme','femme']))
                          ->setTelephone($faker->phoneNumber())
@@ -89,6 +108,10 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         return $apprenant;
     }
 
+
+
+
+    
     private function addUserCommonInfo($user, $profil, $i)
     {
         $faker = Factory::create('fr-FR');

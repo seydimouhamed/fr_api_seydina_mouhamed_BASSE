@@ -3,12 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\ProfilSortieRepository;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -48,7 +49,8 @@ class ProfilSortie
 
     /**
      * @ORM\OneToMany(targetEntity=Apprenant::class, mappedBy="profilSortie")
-     * ApiSubresource()
+     * @ApiSubresource()
+     * @Groups({"ps:read"})
      */
     private $apprenants;
 

@@ -20,7 +20,9 @@ final class ProfilSortieDataPersister implements ContextAwareDataPersisterInterf
 
     public function persist($data, array $context = [])
     {
-      // call your persistence layer to save $data
+      
+      $this->em->persist($data);
+      $this->em->flush();
       return $data;
     }
 
@@ -30,7 +32,7 @@ final class ProfilSortieDataPersister implements ContextAwareDataPersisterInterf
         $this->em->persist($data);
         foreach($data->getUsers() as $u)
         {
-          $u->setArchivage(true);
+          $u->setProfilSortie(null);
         }
         $this->em->flush();
     }

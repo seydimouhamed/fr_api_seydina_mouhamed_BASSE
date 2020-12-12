@@ -28,6 +28,8 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface
 
     public function persist($data, array $context = [])
     {
+        $this->em->persist($data);
+        $this->em->flush();
         return $data;
     }
 
@@ -36,6 +38,5 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface
         $data->setArchivage(true);
         $this->em->persist($data);
         $this->em->flush();
-      // call your persistence layer to delete $data
     }
 }

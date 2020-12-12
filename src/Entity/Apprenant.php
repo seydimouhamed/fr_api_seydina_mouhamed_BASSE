@@ -53,8 +53,15 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *                "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN'))",
  *                  "security_message"="Acces non autorisé",
  *          },
+ *
+ *            " get_profilSortie_id_apprenants"={ 
+ *               "method"="DELETE", 
+ *               "path"="/apprenants/{id}",
+ *                "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN'))",
+ *                  "security_message"="Acces non autorisé",
+ *          },
  *       },
- *       normalizationContext={"groups"={"apprenant:read","user:read"}},
+ *       normalizationContext={"groups"={"apprenant:read","user:read","ps:read"}},
  *       denormalizationContext={"groups"={"apprenant:write","user:write"}},
  *       attributes={
  *          "pagination_enabled"=true,
@@ -106,6 +113,34 @@ class Apprenant extends User
      * @ORM\ManyToOne(targetEntity=ProfilSortie::class, inversedBy="apprenants")
      */
     private $profilSortie;
+
+    /**
+     * @ORM\OneToMany(targetEntity=LivrableAttenduApprenant::class, mappedBy="apprenant")
+     */
+    private $livrableAttenduApprenants;
+
+    /**
+     * @ORM\OneToMany(targetEntity=LivrablePartielApprenant::class, mappedBy="apprenant")
+     */
+    private $livrablePartielApprenants;
+
+    /**
+     * @ORM\OneToMany(targetEntity=BriefApprenant::class, mappedBy="apprenant")
+     */
+    private $briefApprenants;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CompetenceValide::class, mappedBy="apprenant")
+     */
+    private $competenceValides;
+
+    public function __construct()
+    {
+        $this->livrableAttenduApprenants = new ArrayCollection();
+        $this->livrablePartielApprenants = new ArrayCollection();
+        $this->briefApprenants = new ArrayCollection();
+        $this->competenceValides = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -168,6 +203,126 @@ class Apprenant extends User
     public function setProfilSortie(?ProfilSortie $profilSortie): self
     {
         $this->profilSortie = $profilSortie;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LivrableAttenduApprenant[]
+     */
+    public function getLivrableAttenduApprenants(): Collection
+    {
+        return $this->livrableAttenduApprenants;
+    }
+
+    public function addLivrableAttenduApprenant(LivrableAttenduApprenant $livrableAttenduApprenant): self
+    {
+        if (!$this->livrableAttenduApprenants->contains($livrableAttenduApprenant)) {
+            $this->livrableAttenduApprenants[] = $livrableAttenduApprenant;
+            $livrableAttenduApprenant->setApprenant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLivrableAttenduApprenant(LivrableAttenduApprenant $livrableAttenduApprenant): self
+    {
+        if ($this->livrableAttenduApprenants->removeElement($livrableAttenduApprenant)) {
+            // set the owning side to null (unless already changed)
+            if ($livrableAttenduApprenant->getApprenant() === $this) {
+                $livrableAttenduApprenant->setApprenant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LivrablePartielApprenant[]
+     */
+    public function getLivrablePartielApprenants(): Collection
+    {
+        return $this->livrablePartielApprenants;
+    }
+
+    public function addLivrablePartielApprenant(LivrablePartielApprenant $livrablePartielApprenant): self
+    {
+        if (!$this->livrablePartielApprenants->contains($livrablePartielApprenant)) {
+            $this->livrablePartielApprenants[] = $livrablePartielApprenant;
+            $livrablePartielApprenant->setApprenant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLivrablePartielApprenant(LivrablePartielApprenant $livrablePartielApprenant): self
+    {
+        if ($this->livrablePartielApprenants->removeElement($livrablePartielApprenant)) {
+            // set the owning side to null (unless already changed)
+            if ($livrablePartielApprenant->getApprenant() === $this) {
+                $livrablePartielApprenant->setApprenant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|BriefApprenant[]
+     */
+    public function getBriefApprenants(): Collection
+    {
+        return $this->briefApprenants;
+    }
+
+    public function addBriefApprenant(BriefApprenant $briefApprenant): self
+    {
+        if (!$this->briefApprenants->contains($briefApprenant)) {
+            $this->briefApprenants[] = $briefApprenant;
+            $briefApprenant->setApprenant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBriefApprenant(BriefApprenant $briefApprenant): self
+    {
+        if ($this->briefApprenants->removeElement($briefApprenant)) {
+            // set the owning side to null (unless already changed)
+            if ($briefApprenant->getApprenant() === $this) {
+                $briefApprenant->setApprenant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CompetenceValide[]
+     */
+    public function getCompetenceValides(): Collection
+    {
+        return $this->competenceValides;
+    }
+
+    public function addCompetenceValide(CompetenceValide $competenceValide): self
+    {
+        if (!$this->competenceValides->contains($competenceValide)) {
+            $this->competenceValides[] = $competenceValide;
+            $competenceValide->setApprenant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompetenceValide(CompetenceValide $competenceValide): self
+    {
+        if ($this->competenceValides->removeElement($competenceValide)) {
+            // set the owning side to null (unless already changed)
+            if ($competenceValide->getApprenant() === $this) {
+                $competenceValide->setApprenant(null);
+            }
+        }
 
         return $this;
     }

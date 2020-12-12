@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\NiveauRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\NiveauRepository;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -19,32 +21,43 @@ class Niveau
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $libelle;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
+     * @Assert\NotBlank
+     * @Groups({"postCompNiv"})
      */
     private $critereEvaluation;
+
+    /**
+     * @ORM\Column(type="text")
+     * @Assert\NotBlank
+     * @Groups({"postCompNiv"})
+     */
+    private $groupeAction;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Assert\NotBlank
+     * @Groups({"postCompNiv"})
+     */
+    private $numero;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Competence::class, inversedBy="niveaux")
+     */
+    private $competence;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $archivage=false;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getLibelle(): ?string
-    {
-        return $this->libelle;
-    }
-
-    public function setLibelle(string $libelle): self
-    {
-        $this->libelle = $libelle;
-
-        return $this;
-    }
 
     public function getCritereEvaluation(): ?string
     {
@@ -54,6 +67,54 @@ class Niveau
     public function setCritereEvaluation(string $critereEvaluation): self
     {
         $this->critereEvaluation = $critereEvaluation;
+
+        return $this;
+    }
+
+    public function getGroupeAction(): ?string
+    {
+        return $this->groupeAction;
+    }
+
+    public function setGroupeAction(string $groupeAction): self
+    {
+        $this->groupeAction = $groupeAction;
+
+        return $this;
+    }
+
+    public function getNumero(): ?int
+    {
+        return $this->numero;
+    }
+
+    public function setNumero(int $numero): self
+    {
+        $this->numero = $numero;
+
+        return $this;
+    }
+
+    public function getCompetence(): ?Competence
+    {
+        return $this->competence;
+    }
+
+    public function setCompetence(?Competence $competence): self
+    {
+        $this->competence = $competence;
+
+        return $this;
+    }
+
+    public function getArchivage(): ?bool
+    {
+        return $this->archivage;
+    }
+
+    public function setArchivage(bool $archivage): self
+    {
+        $this->archivage = $archivage;
 
         return $this;
     }

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use ApiPlatform\Core\Annotation\ApiFilter;
@@ -24,7 +26,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "validation_groups"={"Default", "create"}
  *          },
  *     },
- *       normalizationContext={"groups"={"user:read"}},
+ *       normalizationContext={"groups"={"user:read","resumeUser"}},
  *       denormalizationContext={"groups"={"user:write"}},
  *       attributes={
  *          "security"="is_granted('ROLE_ADMIN')",
@@ -35,6 +37,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *    
  * )
  * @ApiFilter(BooleanFilter::class, properties={"archivage"})
+ * @ApiFilter(SearchFilter::class, properties={"id":"exact","profil.libelle": "exact"})
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @Orm\Table("`user`")
  */
@@ -44,7 +47,7 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"user:read","profil:read"})
+     * @Groups({"user:read","profil:read","resumeUser"})
      */
     protected $id;
 
@@ -75,14 +78,14 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user:read", "user:write","profil:read"})
+     * @Groups({"user:read", "user:write","profil:read","resumeUser"})
      * @Assert\NotBlank
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user:read", "user:write","profil:read"})
+     * @Groups({"user:read", "user:write","profil:read","resumeUser"})
      * @Assert\NotBlank
      */
     private $lastname;
@@ -111,6 +114,16 @@ class User implements UserInterface
      * @Assert\NotBlank
      */
     private $email;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Chat::class, mappedBy="user")
+     */
+    private $chats;
+
+    public function __construct()
+    {
+        $this->chats = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -177,11 +190,11 @@ class User implements UserInterface
     */
    public function getPlainPassword(): string
    {
-    if($this->password)
-    {
-        $this->plainPassword =$this->password;
-        return $this;
-    }
+    // if($this->password)
+    // {
+    //     $this->plainPassword =$this->password;
+    //     return $this;
+    // }
        return (string) $this->plainPassword;
    }
 
@@ -249,12 +262,12 @@ class User implements UserInterface
     public function getAvatar()
     {
        
-        if($this->avatar!==null){
-            $content = \stream_get_contents($this->avatar);
-            fclose($this->avatar);
+        // if($this->avatar!==null || $this->avatar!==""){
+        //     $content = \stream_get_contents($this->avatar);
+        //     fclose($this->avatar);
             
-            return base64_encode($content);
-        }
+        //     return base64_encode($content);
+        // }
 
         return null;
     }
@@ -287,6 +300,36 @@ class User implements UserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Chat[]
+     */
+    public function getChats(): Collection
+    {
+        return $this->chats;
+    }
+
+    public function addChat(Chat $chat): self
+    {
+        if (!$this->chats->contains($chat)) {
+            $this->chats[] = $chat;
+            $chat->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChat(Chat $chat): self
+    {
+        if ($this->chats->removeElement($chat)) {
+            // set the owning side to null (unless already changed)
+            if ($chat->getUser() === $this) {
+                $chat->setUser(null);
+            }
+        }
 
         return $this;
     }
