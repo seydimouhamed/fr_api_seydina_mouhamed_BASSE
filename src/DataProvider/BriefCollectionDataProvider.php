@@ -35,6 +35,7 @@ final class BriefCollectionDataProvider implements ContextAwareCollectionDataPro
     public function getCollection(string $resourceClass, string $operationName = null, array $context = []): iterable
     {
         
+        
        // dd($this->isGranted('ROLE_ADMIN'));
             $id=$this->request->get('id');
         if($operationName=="getBriefPromoGroupe"){

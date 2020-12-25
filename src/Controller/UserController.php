@@ -60,6 +60,7 @@ class UserController extends AbstractController
           
 
         //dd($request);
+        //return $this->json('access',  Response::HTTP_ACCEPTED);
         if(!$this->isGranted('ROLE_ADMIN'))
         {
             return $this->json(['message'=>'acces refuse'],Response::HTTP_BAD_REQUEST);
@@ -67,9 +68,10 @@ class UserController extends AbstractController
         
 
         $user = $this->_userService->add($request);
+       // return $this->json($user,400);
         if(!($user instanceof User))
         {
-            return new JsonResponse($users,Response::HTTP_BAD_REQUEST,[],true);
+            return new JsonResponse($user,Response::HTTP_BAD_REQUEST,[],true);
         }
 
         $this->em->persist($user);
@@ -77,9 +79,9 @@ class UserController extends AbstractController
 
 
         
-        $this->_sendMail->sendMail($user,"Bienvenue");
+       // $this->_sendMail->sendMail($user,"Bienvenue");
 
-        return $this->json($user,201);
+        return $this->json($user, 201);
      }
 
      /**
@@ -120,8 +122,6 @@ class UserController extends AbstractController
        */
       public function getCurrentUser()
       {
-          //recupéré tout les données de la requete
-          
           $user = $this->getUser();
           
           return $this->json($user,201);

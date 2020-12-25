@@ -53,7 +53,7 @@ class UserService
 
          $errors = $this->validator->validate($user);
          if (count($errors)){
-             $errors = $this->serializer->serialize($errors,"json");
+             $errors = $this->_serializer->serialize($errors,"json");
              // return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
             return $errors;
          }
@@ -66,6 +66,13 @@ class UserService
 
 
     public function getRandomPassword(int $nbr=8)
+    {
+
+      return base64_encode(random_bytes($nbr));
+
+     //   return "passe123";
+    }
+    public function getRandomUserName(int $nbr=6)
     {
 
       return base64_encode(random_bytes($nbr));

@@ -58,9 +58,7 @@ class User implements UserInterface
      */
     private $usernme;
 
-    // /**
-    //  * @ORM\Column(type="json")
-    //  */
+ 
     private $roles = [];
 
     /**
@@ -70,10 +68,6 @@ class User implements UserInterface
     private $password;
 
 
-    // /**
-    //  * @Groups("user:write")
-    //  * @Assert\NotBlank(groups={"create"})
-    //  */
     private $plainPassword;
 
     /**
@@ -190,11 +184,6 @@ class User implements UserInterface
     */
    public function getPlainPassword(): string
    {
-    // if($this->password)
-    // {
-    //     $this->plainPassword =$this->password;
-    //     return $this;
-    // }
        return (string) $this->plainPassword;
    }
 
@@ -261,13 +250,13 @@ class User implements UserInterface
 
     public function getAvatar()
     {
-       
-        // if($this->avatar!==null || $this->avatar!==""){
-        //     $content = \stream_get_contents($this->avatar);
-        //     fclose($this->avatar);
+       if($this->avatar){
+            $content = \stream_get_contents($this->avatar);
+            fclose($this->avatar);
             
-        //     return base64_encode($content);
-        // }
+            return base64_encode($content);
+        }
+        
 
         return null;
     }
