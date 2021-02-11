@@ -49,7 +49,6 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
        $faker= Factory::create('fr-FR');
        $this->photo= "";
-      // $this->photo= \fopen($faker->imageUrl($width =640, $height = 640), 'rb');
         for($j=0;$j<=3;$j++)
         {
             $profil=$this->getReference(ProfileFixtures::getReferenceKey($j));
@@ -117,7 +116,8 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $faker = Factory::create('fr-FR');
         $user-> setProfil($profil);
         
-         $photo= $this->photo;
+        $photo= \fopen("https://source.unsplash.com/640x640/?portrait", 'rb');
+        // $photo= \fopen($faker->imageUrl($width =640, $height = 640), 'rb');
         $user -> setUsernme(strtolower($profil->getLibelle()).$i)
              -> setFirstname($faker->firstName)
              ->setLastname($faker->lastName)

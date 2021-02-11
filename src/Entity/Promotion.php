@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 /**
  * @ApiResource(
@@ -90,9 +91,10 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *          "security_message"="Acces non autorisé",
  *      },
  *       normalizationContext={"groups"={"Default","resumePromo","srGrpApprent"}},
- *       denormalizationContext={"groups"={"user:write","formateur:write"}}
+ *       denormalizationContext={"groups"={"user:write","formateur:write","promo:wrtite"}}
  * )
  * 
+ * @ApiFilter(BooleanFilter::class, properties={"archivage"})
  * @ORM\Entity(repositoryClass=PromotionRepository::class)
  */
 class Promotion
@@ -107,49 +109,49 @@ class Promotion
 
     /**
      * @ORM\Column(type="string", length=30)
-     * @Groups({"getPromoGpPrincipal","resumePromo","srGrpApprent","wPromoRef"})
+     * @Groups({"getPromoGpPrincipal","resumePromo","srGrpApprent","wPromoRef","promo:wrtite"})
      */
     private $langue;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"getPromoGpPrincipal","resumePromo","srGrpApprent","wPromoRef"})
+     * @Groups({"getPromoGpPrincipal","resumePromo","srGrpApprent","wPromoRef", "promo:wrtite"})
      */
     private $titre;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"getPromoGpPrincipal","resumePromo","wPromoRef"})
+     * @Groups({"getPromoGpPrincipal","resumePromo","wPromoRef", "promo:wrtite"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"getPromoGpPrincipal","wPromoRef"})
+     * @Groups({"getPromoGpPrincipal","wPromoRef", "promo:wrtite"})
      */
     private $lieu;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"getPromoGpPrincipal","wPromoRef"})
+     * @Groups({"getPromoGpPrincipal","wPromoRef", "promo:wrtite"})
      */
     private $dateDebut;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"getPromoGpPrincipal","wPromoRef"})
+     * @Groups({"getPromoGpPrincipal","wPromoRef", "promo:wrtite"})
      */
     private $dateFinPro;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime",nullable=true)
      * @Groups({"getPromoGpPrincipal","wPromoRef"})
      */
     private $dateFinReelle;
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Groups({"getPromoGpPrincipal","wPromoRef"})
+     * @Groups({"getPromoGpPrincipal","wPromoRef", "promo:wrtite"})
      */
     private $fabrique;
 
@@ -157,12 +159,12 @@ class Promotion
      * @ORM\Column(type="string", length=30)
      * @Groups({"getPromoGpPrincipal"})
      */
-    private $status;
+    private $status="attente";
 
 
     /**
      * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="promotions")
-     * @Groups({"getPromoGpPrincipal","getGrpPrin","getAppAttente","getRef","wPromoRef"})
+     * @Groups({"getPromoGpPrincipal","getGrpPrin","getAppAttente","getRef","wPromoRef", "promo:wrtite"})
      */
     private $referentiel;
 
@@ -184,6 +186,8 @@ class Promotion
 
     /**
      * @ORM\Column(type="blob",nullable=true)
+     * @Groups({"getPromoGpPrincipal","wPromoRef", "promo:wrtite"})
+     *
      */
     private $avatar;
 

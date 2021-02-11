@@ -18,7 +18,7 @@ class GroupeCompetenceFixtures extends Fixture implements DependentFixtureInterf
     {
         return array(
             CompetenceFixtures::class,
-            GroupeTagFixtures::class,
+            \App\DataFixtures\TagFixtures::class,
         );
     }
 
@@ -47,12 +47,12 @@ class GroupeCompetenceFixtures extends Fixture implements DependentFixtureInterf
             //$this->addReference(self::getReferenceKey($i), $gc);
              $faker->unique($reset = true );
 
-             $nbrTags = $faker -> randomElement([2,3]);
+             $nbrTags = $faker -> randomElement([3,7]);
 
             for($k=1 ;$k <= $nbrTags;$k++ )
             {
-                $key=$faker->unique(true)->numberBetween(1,3);
-                $gc->addTag($this->getReference(GroupeTagFixtures::getReferenceKey($key)));
+                $key=$faker->unique(true)->numberBetween(1,12);
+                $gc->addTag($this->getReference(TagFixtures::getReferenceKey($key)));
             }
             $faker->unique($reset = true );
           //  dd($gc);

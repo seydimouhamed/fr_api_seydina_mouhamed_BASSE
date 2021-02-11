@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Tag;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GroupeCompetenceRepository;
@@ -11,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 /**
  * @ApiResource(
@@ -22,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *               "path"="/grpecompetences",
  *               "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN') or is_granted('ROLE_CM'))",
  *               "security_message"="Acces non autorisé",
- *                "normalization_context"={"groups"={"getGrpComp"}},
+ *                "normalization_context"={"groups"={"getGrpComp","getGrpCompComp","gettag"}},
  *          },
  *           "get_grpecompetences_competence"={ 
  *               "method"="GET", 
@@ -34,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *            "add_grpecompetence"={ 
  *               "method"="POST", 
  *               "path"="/grpecompetences",
- *                "denormalization_context"={"groups"={"postComp"}},
+ *                "denormalization_context"={"groups"={"postGrpComp"}},
  *               "security" = "is_granted('ROLE_ADMIN')",
  *               "security_message"="Acces non autorisé",
  *          }
@@ -45,7 +48,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *               "path"="/grpecompetences/{id}",
  *                "defaults"={"id"=null},
  *                "requirements"={"id"="\d+"},
- *                "normalization_context"={"groups"={"getGrpComp"}},
+ *                "normalization_context"={"groups"={"getGrpComp","getGrpCompComp","gettag"}},
  *                "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN') or is_granted('ROLE_CM'))",
  *                  "security_message"="Acces non autorisé",
  *          },
@@ -66,10 +69,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *                "denormalization_context"={"groups"={"postCompNiv"}, "enable_max_depth"=true,},
  *                "security" = "is_granted('ROLE_ADMIN')",
  *                  "security_message"="Acces non autorisé",
- *          }
+ *          },
+ *          "delete"
  *       },
  *      attributes={"force_eager"=false,}
  * )
+ *       denormalizationContext={"groups"={"postGrpComp"}}
+ * @ApiFilter(BooleanFilter::class, properties={"archivage"})
  * @ORM\Entity(repositoryClass=GroupeCompetenceRepository::class)
  */
 class GroupeCompetence
@@ -78,7 +84,7 @@ class GroupeCompetence
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"getGrpComp"})
+     * @Groups({"getGrpComp","getRefGrpComp"})
      */
     private $id;
 
@@ -99,14 +105,8 @@ class GroupeCompetence
     /**
      * @ORM\Column(type="boolean")
      */
-    private $archivage;
+    private $archivage=false;
     
-    // /**
-    //  * @MaxDepth(2)
-    //  * @ORM\OneToMany(targetEntity=Competence::class, mappedBy="groupeCompetence",cascade={"persist", "remove"})
-    //  * @Groups({"getGrpCompComp", "postCompNiv"})
-    //  */
-    // private $competences;
 
     /**
      * @ORM\ManyToMany(targetEntity=Referentiel::class, mappedBy="grpCompetences")
@@ -116,13 +116,14 @@ class GroupeCompetence
     /**
      * @MaxDepth(2)
      * @ORM\ManyToMany(targetEntity=Competence::class, inversedBy="groupeCompetences",cascade={"persist", "remove"})
-     * @Groups({"getGrpCompComp", "postCompNiv"})
+     * @Groups({"getGrpComp","getGrpCompComp", "postCompNiv","postGrpComp"})
      * @ApiSubresource
      */
     private $competences;
 
     /**
-     * @ORM\ManyToMany(targetEntity=GroupeTag::class, inversedBy="groupeCompetences")
+     * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="groupeCompetences")
+     * @Groups({"getGrpComp","getGrpCompComp", "postCompNiv","postGrpComp"})
      */
     private $tags;
 
@@ -227,14 +228,14 @@ class GroupeCompetence
     }
 
     /**
-     * @return Collection|GroupeTag[]
+     * @return Collection|Tag[]
      */
     public function getTags(): Collection
     {
         return $this->tags;
     }
 
-    public function addTag(GroupeTag $tag): self
+    public function addTag(Tag $tag): self
     {
         if (!$this->tags->contains($tag)) {
             $this->tags[] = $tag;
@@ -243,7 +244,7 @@ class GroupeCompetence
         return $this;
     }
 
-    public function removeTag(GroupeTag $tag): self
+    public function removeTag(Tag $tag): self
     {
         $this->tags->removeElement($tag);
 

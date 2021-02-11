@@ -18,6 +18,7 @@ class Niveau
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *@Groups("getCompNiv")
      */
     private $id;
 
@@ -25,21 +26,21 @@ class Niveau
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank
-     * @Groups({"postCompNiv"})
+     * @Groups({"postCompNiv","getCompNiv"})
      */
     private $critereEvaluation;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank
-     * @Groups({"postCompNiv"})
+     * @Groups({"postCompNiv","getCompNiv"})
      */
     private $groupeAction;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotBlank
-     * @Groups({"postCompNiv"})
+     * @Groups({"postCompNiv","getCompNiv"})
      */
     private $numero;
 

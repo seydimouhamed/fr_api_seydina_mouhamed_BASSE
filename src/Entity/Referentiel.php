@@ -4,11 +4,13 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ReferentielRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 //               "controller"="App\Controller\Referentiel\GetReferentielGroupeCompetence"
 
 /**
@@ -39,6 +41,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                "security"="is_granted('IS_AUTHENTICATED_FULLY')",
  *                  "security_message"="Acces non autorisé",
  *          },
+ *          "delete"
  *      },
  *      collectionOperations={
  *           "get_referentiels"={ 
@@ -56,8 +59,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                  "security_message"="Acces non autorisé",
  *          },
  *          "post",
- *      }   
+ *      },
+ *       denormalizationContext={"groups"={"postRef"}}  
  * )
+ * @ApiFilter(BooleanFilter::class, properties={"archivage"})
  * @ORM\Entity(repositoryClass=ReferentielRepository::class)
  */
 class Referentiel
@@ -73,13 +78,13 @@ class Referentiel
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"getRefGrpComp","getGrpCompComp"})
+     * @Groups({"getRefGrpComp","getGrpCompComp","postRef"})
      */
     private $libelle;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"getRefGrpComp"})
+     * @ORM\Column(type="text")
+     * @Groups({"getRefGrpComp","postRef"})
      */
     private $presentation;
 
@@ -91,19 +96,19 @@ class Referentiel
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"getRefGrpComp"})
+     * @Groups({"getRefGrpComp","postRef"})
      */
     private $critereAdmission;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"getRefGrpComp"})
+     * @Groups({"getRefGrpComp","postRef"})
      */
     private $critereEvaluation;
 
     /**
      * @ORM\ManyToMany(targetEntity=GroupeCompetence::class, inversedBy="referentiels")
-     * @Groups({"getRefGrpComp","getGrpCompComp"})
+     * @Groups({"getRefGrpComp","getGrpCompComp","postRef"})
      * @ApiSubresource
      */
     private $grpCompetences;
@@ -111,7 +116,7 @@ class Referentiel
     /**
      * @ORM\Column(type="boolean")
      */
-    private $archivage;
+    private $archivage=false;
 
     /**
      * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="referentiel")

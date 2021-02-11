@@ -4,10 +4,12 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CompetenceRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 /**
  * @ApiResource(
@@ -19,6 +21,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *               "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN') or is_granted('ROLE_CM'))",
  *               "security_message"="Acces non autorisé",
  *                "normalization_context"={"groups"={"getCompNiv"}},
+ *          },
+ *           "get_competences_resume"={ 
+ *               "method"="GET", 
+ *               "path"="/competences/resume",
+ *               "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN') or is_granted('ROLE_CM'))",
+ *               "security_message"="Acces non autorisé",
+ *                "normalization_context"={"groups"={"getCompRes"}},
  *          },
  *            "add_niveaux_competence"={ 
  *               "method"="POST", 
@@ -32,6 +41,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *           "get_competences_id"={ 
  *               "method"="GET", 
  *               "path"="/competences/{id}",
+ *                "normalization_context"={"groups"={"getCompNiv"}},
  *                "defaults"={"id"=null},
  *                "requirements"={"id"="\d+"},
  *                "security"="(is_granted('ROLE_FORMATEUR') or is_granted('ROLE_ADMIN') or is_granted('ROLE_CM'))",
@@ -45,13 +55,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                "requirements"={"id"="\d+"},
  *                "security" = "is_granted('ROLE_ADMIN')",
  *                  "security_message"="Acces non autorisé",
- *          }
+ *          },
+ *          "delete"
  *       },
  *       attributes={
  *          "pagination_enabled"=true,
  *          "pagination_client_items_per_page"=true, 
  *          "pagination_items_per_page"=5}
  * )
+ * @ApiFilter(BooleanFilter::class, properties={"archivage"})
  * @ORM\Entity(repositoryClass=CompetenceRepository::class)
  */
 class Competence
@@ -60,13 +72,13 @@ class Competence
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"getCompNiv","getGrpCompComp"})
+     * @Groups({"getCompNiv","getGrpCompComp","getCompRes"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"getCompNiv","postCompNiv","getGrpCompComp"})
+     * @Groups({"getCompNiv","postCompNiv","getGrpCompComp","getCompRes"})
      */
     private $libelle;
 

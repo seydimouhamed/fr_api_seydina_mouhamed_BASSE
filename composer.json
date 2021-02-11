@@ -17,6 +17,7 @@
         "lexik/jwt-authentication-bundle": "^2.9",
         "nelmio/cors-bundle": "^2.1",
         "phpdocumentor/reflection-docblock": "^5.2",
+        "phpoffice/phpspreadsheet": "^1.16",
         "sensio/framework-extra-bundle": "^5.6",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "5.1.*",

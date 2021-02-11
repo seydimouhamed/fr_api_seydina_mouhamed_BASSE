@@ -23,7 +23,7 @@ final class ReferentielItemDataProvider implements ItemDataProviderInterface, Re
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
     {
-        if($operationName==="get_referentiel_id"){
+        if($operationName==="get_referentiel_id" || $operationName === "delete"  || "put_competences"){
             return false;
         }
             return Referentiel::class === $resourceClass;

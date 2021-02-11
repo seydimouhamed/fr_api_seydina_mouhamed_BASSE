@@ -142,7 +142,6 @@ class UserController extends AbstractController
       public function updateUser(Request $request,int $id)
       {
           //recupéré tout les données de la requete
-          
          $user = $this->em->getRepository(User::class)->find($id);
 
          if(!($this->isGranted('ROLE_ADMIN') ||  $user==$this->getUser()))
@@ -153,7 +152,7 @@ class UserController extends AbstractController
           $data =  $request->request->all();
          foreach($data as $key => $d)
          {
-                if($key!=="_method" && $key!==$profil)
+                if($key!=="_method" && $key!=='idProfil')
                 {
                         $user->{"set".ucfirst($key)}($d);
                     
@@ -166,9 +165,9 @@ class UserController extends AbstractController
             return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
         }
          $photo=$request->files->get("avatar");
-          $photoBlob = fopen($photo->getRealPath(),"rb");
           if($photo)
           {
+              $photoBlob = fopen($photo->getRealPath(),"rb");
               $user->setAvatar($photoBlob);
           }
           $this->em->persist($user);

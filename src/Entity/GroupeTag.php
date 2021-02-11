@@ -74,15 +74,9 @@ class GroupeTag
      */
     private $tag;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=GroupeCompetence::class, mappedBy="tags")
-     */
-    private $groupeCompetences;
-
     public function __construct()
     {
         $this->tag = new ArrayCollection();
-        $this->groupeCompetences = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -134,33 +128,6 @@ class GroupeTag
     public function removeTag(Tag $tag): self
     {
         $this->tag->removeElement($tag);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|GroupeCompetence[]
-     */
-    public function getGroupeCompetences(): Collection
-    {
-        return $this->groupeCompetences;
-    }
-
-    public function addGroupeCompetence(GroupeCompetence $groupeCompetence): self
-    {
-        if (!$this->groupeCompetences->contains($groupeCompetence)) {
-            $this->groupeCompetences[] = $groupeCompetence;
-            $groupeCompetence->addTag($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGroupeCompetence(GroupeCompetence $groupeCompetence): self
-    {
-        if ($this->groupeCompetences->removeElement($groupeCompetence)) {
-            $groupeCompetence->removeTag($this);
-        }
 
         return $this;
     }
