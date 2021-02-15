@@ -41,6 +41,10 @@ final class PromoCollectionDataProvider implements ContextAwareCollectionDataPro
           // dd($resourceClass);
            return $resourceClass;
         }
+        if($operationName === "getPromoResume"){            
+           $data=$this->service->getPromoGrpPrincipal();
+           return $data;
+        }
         return new Promotion();
     }
 }

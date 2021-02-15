@@ -18,8 +18,9 @@ final class PromoItemDataProvider implements ItemDataProviderInterface, Restrict
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
     {
-        if($operationName==="get_promo_id" || ($operationName==='get_promo_id_referentiel' || "get_promo_id_formateur")){
+        if($operationName==="get_promo_id" || $operationName==='get_promo_id_referentiel' || $operationName==="get_promo_id_formateur"){
            // dd($operationName === 'get_promo_id_referentiel');
+           dd($operationName);
             return false;
         }
         else
@@ -30,20 +31,19 @@ final class PromoItemDataProvider implements ItemDataProviderInterface, Restrict
 
     public function getItem(string $resourceClass,$id, string $operationName = null, array $context = []): iterable
     {
-        
         if($operationName === "get_promo_id_principal"){
 
            $resourceClass=$this->service->getPromoGrpPrincipal($id);
+          
            return $resourceClass;
         }
         if($operationName=== "get_promo_id_referentiel_app_attente")
         {
-           // dd('apprenant');
+            dd('apprenant');
            $resourceClass=$this->service->getApprenantAttente($id);
           // dd($resourceClass);
            return $resourceClass;
         }
-        
        // return new Promotion();
     }
 }

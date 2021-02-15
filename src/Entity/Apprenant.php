@@ -91,21 +91,21 @@ class Apprenant extends User
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"apprenant:read", "apprenant:write","promo:read"})
+     * @Groups({"apprenant:read", "apprenant:write","promo:read","resumeUser"})
      * @Assert\NotBlank
      */
     private $adresse;
 
     /**
      * @ORM\Column(type="string", length=30)
-     * @Groups({"apprenant:read", "apprenant:write","promo:read"})
+     * @Groups({"apprenant:read", "apprenant:write","promo:read","resumeUser"})
      * @Assert\NotBlank
      */
     private $telephone;
 
     /**
      * @ORM\Column(type="boolean", options={"default" : false})
-     * @Groups({"apprenant:read", "apprenant:write","promo:read"})
+     * @Groups({"apprenant:read", "apprenant:write","promo:read","resumeUser"})
      */
     private $statut=false;
 

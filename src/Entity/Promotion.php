@@ -25,6 +25,11 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "path"="/promos",
  *              "normalization_context"={"groups"={"Default","resumePromo","getGrpPrin","resumeUser","resumeGroup"},"enable_max_depth"=true},
  *          },
+ *          "getPromoResume"={
+ *              "method"="GET",
+ *              "path"="/promos/resume",
+ *              "normalization_context"={"groups"={"resumePromo"}},
+ *          },
  *          "get_groupe_principale"={
  *              "method"="GET",
  *              "path"="/promos/principal",
@@ -46,6 +51,11 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *              "path"="/promos/{id}",
  *              "normalization_context"={"groups"={"resumePromo","getGrpPrin","resumeUser","resumeGroup"}},
  *          },
+ *          "get_promo_id_apprenant"={
+ *              "method"="GET",
+ *              "path"="/promos/{id}/apprenants",
+ *              "normalization_context"={"groups"={"resumePromo","getGrpPrin","resumeUser"}},
+ *          },
  *          "get_promo_id_principal"={
  *              "method"="GET",
  *              "path"="/promos/{id}/principal",
@@ -59,7 +69,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *          "get_promo_id_referentiel_app_attente"={
  *              "method"="GET",
  *              "path"="/promos/{id}/apprenants/attente",
- *              "normalization_context"={"groups"={"resumePromo","getAppAttente","resumeUser","getGroups"}},
+ *              "normalization_context"={"groups"={"resumePromo","getAppAttente","resumeUser","getGroups"}, "enable_max_depth"=true},
  *          },
  *          "get_promo_id_formateur"={
  *              "method"="GET",
@@ -94,7 +104,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *       denormalizationContext={"groups"={"user:write","formateur:write","promo:wrtite"}}
  * )
  * 
- * @ApiFilter(BooleanFilter::class, properties={"archivage"})
+ * @ApiFilter(SearchFilter::class, properties={"id":"exact","langue": "exact"})
  * @ORM\Entity(repositoryClass=PromotionRepository::class)
  */
 class Promotion
@@ -127,19 +137,19 @@ class Promotion
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"getPromoGpPrincipal","wPromoRef", "promo:wrtite"})
+     * @Groups({"getPromoGpPrincipal","wPromoRef", "promo:wrtite","resumePromo"})
      */
     private $lieu;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"getPromoGpPrincipal","wPromoRef", "promo:wrtite"})
+     * @Groups({"getPromoGpPrincipal","wPromoRef", "promo:wrtite","resumePromo"})
      */
     private $dateDebut;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"getPromoGpPrincipal","wPromoRef", "promo:wrtite"})
+     * @Groups({"getPromoGpPrincipal","wPromoRef", "promo:wrtite","resumePromo"})
      */
     private $dateFinPro;
 
@@ -186,7 +196,7 @@ class Promotion
 
     /**
      * @ORM\Column(type="blob",nullable=true)
-     * @Groups({"getPromoGpPrincipal","wPromoRef", "promo:wrtite"})
+     * @Groups({"getPromoGpPrincipal","wPromoRef", "promo:wrtite","resumePromo"})
      *
      */
     private $avatar;

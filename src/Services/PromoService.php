@@ -29,7 +29,7 @@ class PromoService
     public function getPromoGrpPrincipal($id=null)
     {
         $data=$this->repo->findByGrpPrincipal($id);
-     
+         
          return $data;
     }
 

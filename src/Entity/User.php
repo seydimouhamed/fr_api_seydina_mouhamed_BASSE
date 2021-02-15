@@ -91,7 +91,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="blob", nullable=true)
-     * @Groups({"user:read", "user:write","profil:read"})
+     * @Groups({"user:read", "user:write","profil:read","resumeUser"})
      */
     private $avatar;
 
@@ -103,7 +103,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user:read", "user:write","profil:read"})
+     * @Groups({"user:read", "user:write","profil:read","resumeUser"})
      * @Assert\Email
      * @Assert\NotBlank
      */
@@ -250,7 +250,7 @@ class User implements UserInterface
 
     public function getAvatar()
     {
-       if($this->avatar){
+       if($this->avatar && \is_resource($this->avatar)){
             $content = \stream_get_contents($this->avatar);
             fclose($this->avatar);
             
